@@ -14,6 +14,7 @@ public class InputHandler implements KeyListener {
     private Timer bufferTimer;
     private boolean bufferActive;
     private boolean shiftPressed; // flag to keep track of Shift key press
+    private boolean enterPressed; // flag to keep track of Enter key press
     private Queue<Character> inputQueue;
     private Thread inputThread;
 
@@ -27,22 +28,47 @@ public class InputHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode == KeyEvent.VK_SHIFT) {
-            shiftPressed = true;
-        } else {
-            char input = e.getKeyChar();
-            if (Character.isLetter(input) && shiftPressed) {
-                // add uppercase version of letter to the queue if Shift key is pressed
-                inputQueue.add(Character.toUpperCase(input));
-            } else {
-                // add regular key input to the queue and start buffer timer if not active
-                inputQueue.add(input);
-                if (!bufferActive) {
-                    bufferActive = true;
-                    bufferTimer = new Timer();
-                    bufferTimer.schedule(new KeyBufferTask(), BUFFER_TIME_MS);
-                }
-            }
+        
+        char input = e.getKeyChar();
+        
+        if (!(!Character.isLetter(input) && !Character.isDigit(input) && input != '-' && input != '=' &&
+        	    input != '[' && input != ']' && input != ';' && input != '\'' && input != ',' && input != '.' &&
+        	    input != '/' && input != '\\' && input != '`' && e.getKeyCode() != KeyEvent.VK_SHIFT && e.getKeyCode() != KeyEvent.VK_BACK_SPACE && e.getKeyCode() != KeyEvent.VK_SPACE
+        	    && input != '!' && input != '@' && input != '#' && input != '$' && input != '%' && input != '^' && input != '&' && input != '*'
+        	    && input != '(' && input != ')'
+        	    
+        	    && input != '~' && input != '_' && input != '+' && input != '"' && input != ':' && input != '?' && input != '>'
+        	    && input != '{' && input != '<' && input != '}'
+        		
+        		)) {
+	        if (keyCode == KeyEvent.VK_SHIFT) {
+	        	
+	            shiftPressed = true;
+	        } 
+	        else if (keyCode == KeyEvent.VK_ENTER) {
+	        	
+	        	enterPressed = true;
+	        	
+	        }
+	        else {
+	        	
+	            if (Character.isLetter(input) && shiftPressed) {
+	            	
+	                // add uppercase version of letter to the queue if Shift key is pressed
+	                inputQueue.add(Character.toUpperCase(input));
+	                
+	                
+	            }
+	            else {
+	                // add regular key input to the queue and start buffer timer if not active
+	                inputQueue.add(input);
+	                if (!bufferActive) {
+	                    bufferActive = true;
+	                    bufferTimer = new Timer();
+	                    bufferTimer.schedule(new KeyBufferTask(), BUFFER_TIME_MS);
+	                }
+	            }
+	        }
         }
         // consume the event to prevent default handling
         e.consume();
@@ -113,6 +139,9 @@ public class InputHandler implements KeyListener {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_SHIFT) {
             shiftPressed = false;
+        }
+        else if (keyCode == KeyEvent.VK_ENTER) {
+        	enterPressed = false;
         }
     }
 

@@ -14,7 +14,7 @@ public class Main {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setTitle("Chat-Messenger");
-
+		
 		app = new App();
 		
 		frame.add(app);
