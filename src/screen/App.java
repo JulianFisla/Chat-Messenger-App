@@ -3,9 +3,11 @@ package screen;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -21,6 +23,7 @@ public class App extends JPanel implements Runnable{
 	public static String username;
 	
 	public static BufferedImage defaultIcon;
+	public static BufferedImage submitButton;
 	
 	public static boolean startUpFinished = false;
 	
@@ -31,6 +34,7 @@ public class App extends JPanel implements Runnable{
 		this.setPreferredSize(new Dimension(600, 600));
 		this.setBackground(Color.white);
 		this.addKeyListener(inputHandler);
+		this.addMouseListener(inputHandler);
 		this.setFocusable(true);
 		
 	}
@@ -56,6 +60,7 @@ public class App extends JPanel implements Runnable{
 
 		try {
 			defaultIcon = ImageIO.read(getClass().getResourceAsStream("/icons/defaulticon.png"));
+			submitButton = ImageIO.read(getClass().getResourceAsStream("/icons/entericon.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,6 +77,9 @@ public class App extends JPanel implements Runnable{
 			// DRAWING CURRENT USER
 			g.drawImage(defaultIcon, 504, 504, 96, 96, null);
 
+			if (username == null) {
+				username = "";
+			}
 			if (username.trim().length() == 0) {
 				
 				username = randomUUID();
@@ -94,11 +102,80 @@ public class App extends JPanel implements Runnable{
 	        
 	        g.setColor(Color.GRAY);
 			g.setFont(new Font("Verdana", Font.PLAIN, 18));
-	        g.drawString("You are currently chatting with: not connected",50, 50);
+	        g.drawString("You are currently chatting with: nobody", 100, 50);
+	        
+	        // DRAWING TEXT BOX
+	        
+	        g.drawRect(96, 525, 344, 45);
+	        
+	        // DRAWING SUBMIT BUTTON
+	        
+	        g.drawImage(submitButton, 450, 523, 48, 46, null);
+	        
+	        // DRAWING TEXT WHILE TYPING
+	        
+	        g.setColor(Color.BLACK);
+	        Font font = new Font("Verdana", Font.PLAIN, 15);
+	        
+	        int length = getStringLength(currentTextBox, font);
+	        System.out.println("Length of \"" + currentTextBox + "\" in pixels: " + length);
+	        
+			g.setFont(font);
+	        g.drawString(getLast325Pixels(currentTextBox), 105, 550);
+	        
 	        
 		}
 		
 	}
+	
+	public static int getStringLength(String str, Font font) {
+        Graphics graphics = null;
+        try {
+            // Create a temporary graphics object to get the font metrics
+            graphics = new java.awt.image.BufferedImage(1, 1, java.awt.image.BufferedImage.TYPE_INT_ARGB).createGraphics();
+            graphics.setFont(font);
+            
+            // Get the font metrics for the given string and font
+            FontMetrics metrics = graphics.getFontMetrics();
+            
+            // Return the width of the string in pixels
+            return metrics.stringWidth(str);
+        } finally {
+            if (graphics != null) {
+                graphics.dispose();
+            }
+        }
+    }
+	
+	public static String getLast325Pixels(String str) {
+        Objects.requireNonNull(str, "Input string must not be null");
+        Font font = new Font("Verdana", Font.PLAIN, 15);
+        Graphics graphics = null;
+        try {
+            // Create a temporary graphics object to get the font metrics
+            graphics = new java.awt.image.BufferedImage(1, 1, java.awt.image.BufferedImage.TYPE_INT_ARGB).createGraphics();
+            graphics.setFont(font);
+            
+            // Get the font metrics for the given string and font
+            FontMetrics metrics = graphics.getFontMetrics();
+            
+            // Determine the maximum number of characters that can be displayed in 336 pixels
+            int maxLength = 0;
+            for (int i = 0; i < str.length(); i++) {
+                if (metrics.stringWidth(str.substring(0, i + 1)) > 325) {
+                    break;
+                }
+                maxLength = i + 1;
+            }
+            
+            // Return the last 336 pixels of the string
+            return str.substring(Math.max(0, str.length() - maxLength));
+        } finally {
+            if (graphics != null) {
+                graphics.dispose();
+            }
+        }
+    }
 
 	public static String randomUUID() {
 
