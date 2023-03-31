@@ -148,34 +148,36 @@ public class App extends JPanel implements Runnable{
     }
 	
 	public static String getLast325Pixels(String str) {
-        Objects.requireNonNull(str, "Input string must not be null");
-        Font font = new Font("Verdana", Font.PLAIN, 15);
-        Graphics graphics = null;
-        try {
-            // Create a temporary graphics object to get the font metrics
-            graphics = new java.awt.image.BufferedImage(1, 1, java.awt.image.BufferedImage.TYPE_INT_ARGB).createGraphics();
-            graphics.setFont(font);
-            
-            // Get the font metrics for the given string and font
-            FontMetrics metrics = graphics.getFontMetrics();
-            
-            // Determine the maximum number of characters that can be displayed in 336 pixels
-            int maxLength = 0;
-            for (int i = 0; i < str.length(); i++) {
-                if (metrics.stringWidth(str.substring(0, i + 1)) > 325) {
-                    break;
-                }
-                maxLength = i + 1;
-            }
-            
-            // Return the last 336 pixels of the string
-            return str.substring(Math.max(0, str.length() - maxLength));
-        } finally {
-            if (graphics != null) {
-                graphics.dispose();
-            }
-        }
-    }
+	    Objects.requireNonNull(str, "Input string must not be null");
+	    Font font = new Font("Verdana", Font.PLAIN, 15);
+	    Graphics graphics = null;
+	    try {
+	        // Create a temporary graphics object to get the font metrics
+	        graphics = new java.awt.image.BufferedImage(1, 1, java.awt.image.BufferedImage.TYPE_INT_ARGB).createGraphics();
+	        graphics.setFont(font);
+
+	        // Get the font metrics for the given string and font
+	        FontMetrics metrics = graphics.getFontMetrics();
+
+	        // Determine the maximum number of characters that can be displayed in 325 pixels
+	        int maxLength = 0;
+	        int pixelWidth = 0;
+	        for (int i = str.length() - 1; i >= 0; i--) {
+	            pixelWidth += metrics.charWidth(str.charAt(i));
+	            if (pixelWidth > 325) {
+	                break;
+	            }
+	            maxLength++;
+	        }
+
+	        // Return the last 325 pixels of the string
+	        return str.substring(Math.max(0, str.length() - maxLength));
+	    } finally {
+	        if (graphics != null) {
+	            graphics.dispose();
+	        }
+	    }
+	}
 
 	public static String randomUUID() {
 
