@@ -126,14 +126,12 @@ public class App extends JPanel implements Runnable{
 	        
 	        	if (currentTextBox.equals("")) {
 	        		
-	        		System.out.println("empty text box");
 	        		currentTextBox = "";
 		        	inputHandler.enterPressed = false;
 	        	}
 	        	else {
 	        		
 	        		messagesSent.add(new Message(currentTextBox, true));
-	        		System.out.println(currentTextBox);
 		        	currentTextBox = "";
 		        	inputHandler.enterPressed = false;
 	        	}
@@ -240,17 +238,13 @@ public class App extends JPanel implements Runnable{
 	    	
 	    	String line = lines.get(i);
 	    	
-	    	maxPixelLength = Math.max(maxPixelLength, getStringLength(lines.get(i), font));
+	    	maxPixelLength = Math.max(maxPixelLength, getStringLength(lines.get(i).trim(), font));
 	    	
 	    }
-	    
-	    System.out.println(maxPixelLength);
 	    
 	    // Draw the lines
 	    for (int i = 0; i < lines.size(); i++) {
 	        String line = lines.get(i);
-	        
-	        //System.out.println(line.replaceAll(" ", "^"));
 	        
 	        int xPos = 0;
 	        
@@ -271,10 +265,10 @@ public class App extends JPanel implements Runnable{
 	    }
 	    
 	    if (type.equals("single")) {
-	    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5, 20);
+	    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5+5, 20);
 	    }
 	    else if (type.equals("other")) {
-	    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5, lines.size() * metrics.getHeight());
+	    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5+5, lines.size() * metrics.getHeight());
 	    }
 	    
 	    int numberOfLines = lines.size();
