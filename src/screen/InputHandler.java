@@ -16,7 +16,7 @@ public class InputHandler implements KeyListener, MouseListener {
     private Timer bufferTimer;
     private boolean bufferActive;
     private boolean shiftPressed; // flag to keep track of Shift key press
-    private boolean enterPressed; // flag to keep track of Enter key press
+    public boolean enterPressed; // flag to keep track of Enter key press
     private boolean typing = false;
     private Queue<Character> inputQueue;
     private Thread inputThread;
@@ -41,7 +41,7 @@ public class InputHandler implements KeyListener, MouseListener {
         	    && input != '(' && input != ')'
         	    
         	    && input != '~' && input != '_' && input != '+' && input != '"' && input != ':' && input != '?' && input != '>'
-        	    && input != '{' && input != '<' && input != '}'
+        	    && input != '{' && input != '<' && input != '}' && e.getKeyCode() != KeyEvent.VK_ENTER
         		
         		)) {
 	        if (keyCode == KeyEvent.VK_SHIFT) {
@@ -118,7 +118,7 @@ public class InputHandler implements KeyListener, MouseListener {
     	
     	if (typing) {
     		// handle the key input here
-            System.out.println("Key input: " + input);
+            //System.out.println("Key input: " + input);
 
             if (Character.isLowerCase(input) && shiftPressed) {
                 input = Character.toUpperCase(input);
@@ -135,7 +135,7 @@ public class InputHandler implements KeyListener, MouseListener {
                 }
             }
 
-            System.out.println(App.currentTextBox);
+            //System.out.println(App.currentTextBox);
     	}
         
     }
@@ -146,9 +146,6 @@ public class InputHandler implements KeyListener, MouseListener {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_SHIFT) {
             shiftPressed = false;
-        }
-        else if (keyCode == KeyEvent.VK_ENTER) {
-        	enterPressed = false;
         }
     }
 

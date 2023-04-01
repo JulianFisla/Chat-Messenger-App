@@ -7,12 +7,18 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import helper.Message;
 
 public class App extends JPanel implements Runnable{
 
@@ -28,6 +34,8 @@ public class App extends JPanel implements Runnable{
 	public static boolean startUpFinished = false;
 	
 	public static String currentTextBox = "";
+	
+	public static ArrayList<Message> messagesSent = new ArrayList<> ();
 	
 	public App() {
 		
@@ -112,20 +120,122 @@ public class App extends JPanel implements Runnable{
 	        
 	        g.drawImage(submitButton, 450, 523, 48, 46, null);
 	        
+	        // ENTER KEY MESSAGE SUBMISSION
+	        
+	        if (inputHandler.enterPressed) {
+	        
+	        	if (currentTextBox.equals("")) {
+	        		
+	        		System.out.println("empty text box");
+	        		currentTextBox = "";
+		        	inputHandler.enterPressed = false;
+	        	}
+	        	else {
+	        		
+	        		messagesSent.add(new Message(currentTextBox, true));
+	        		System.out.println(currentTextBox);
+		        	currentTextBox = "";
+		        	inputHandler.enterPressed = false;
+	        	}
+	        	
+	        }
+	        
 	        // DRAWING TEXT WHILE TYPING
 	        
 	        g.setColor(Color.BLACK);
 	        Font font = new Font("Verdana", Font.PLAIN, 15);
 	        
 	        int length = getStringLength(currentTextBox, font);
-	        System.out.println("Length of \"" + currentTextBox + "\" in pixels: " + length);
 	        
 			g.setFont(font);
 	        g.drawString(getLast325Pixels(currentTextBox), 105, 550);
 	        
+	        // DRAWING MESSAGES TO SCREEN
 	        
+	        drawTextOnScreen(messagesSent, g);
 		}
 		
+	}
+	
+	public void drawTextOnScreen(ArrayList<Message> messagesSent, Graphics g) {
+	   
+		Font font = new Font("Verdana", Font.PLAIN, 15);
+		
+		int posX = 250;
+		int posY = 400;
+		
+		
+		for (int i = messagesSent.size()-1; i >= 0; i--) {
+			
+			int adjustmentFactor = drawIndividualMessage(messagesSent.get(i).getMessage(), posX, posY, font, g);
+			
+			posY -= (adjustmentFactor-1)*20+30;
+			
+		}
+		
+	}
+
+	private int drawIndividualMessage(String message, int startX, int endY, Font font, Graphics g) {
+	    // Set the font and size of the text
+	    g.setFont(font);
+
+	    // Define the text to display
+	    String text = message;
+
+	    // Get the font metrics object to measure the width of the text
+	    FontMetrics metrics = g.getFontMetrics();
+	    
+	    // Initialize the line width and height
+	    int lineWidth = 0;
+	    int lineHeight = metrics.getHeight();
+	    
+	    // Split the text into lines
+	    List<String> lines = new ArrayList<>();
+	    
+	    StringBuilder currentLine = new StringBuilder();
+	    for (String word : text.split("\\s+")) {
+	        int wordWidth = metrics.stringWidth(word);
+	        if (wordWidth > 300) {
+	            // Split the word into smaller chunks
+	            int startIndex = 0;
+	            while (startIndex < word.length()) {
+	                int endIndex = startIndex;
+	                int chunkWidth = 0;
+	                while (endIndex < word.length() && chunkWidth + metrics.charWidth(word.charAt(endIndex)) <= 300) {
+	                    chunkWidth += metrics.charWidth(word.charAt(endIndex));
+	                    endIndex++;
+	                }
+	                lines.add(word.substring(startIndex, endIndex));
+	                startIndex = endIndex;
+	            }
+	        } else if (lineWidth + wordWidth > 300) {
+	            lines.add(currentLine.toString());
+	            currentLine = new StringBuilder(word + " ");
+	            lineHeight += metrics.getHeight();
+	            lineWidth = wordWidth + metrics.stringWidth(" ");
+	        } else {
+	            currentLine.append(word).append(" ");
+	            lineWidth += wordWidth + metrics.stringWidth(" ");
+	        }
+	    }
+	    if (currentLine.length() > 0) {
+	        lines.add(currentLine.toString());
+	    }
+
+	    // Calculate the starting Y position
+	    int startY = endY - (lines.size() - 1) * metrics.getHeight();
+
+	    // Draw the lines
+	    for (int i = 0; i < lines.size(); i++) {
+	        String line = lines.get(i);
+	        int pixelLength = metrics.stringWidth(line);
+	        int xPos = startX + 300 - pixelLength;
+	        g.drawString(line, xPos, startY + i * metrics.getHeight());
+	    }
+	    
+	    int numberOfLines = lines.size();
+	    
+	    return numberOfLines;
 	}
 	
 	public static int getStringLength(String str, Font font) {
