@@ -7,11 +7,16 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import javax.imageio.ImageIO;
@@ -19,10 +24,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import helper.Message;
+import network.ClientNetwork;
+import network.ConnectionCode;
+import network.ServerNetwork;
 
 public class App extends JPanel implements Runnable{
 
+	public static String clientIp;
+	
 	public static Thread thread;
+	
+	public static ClientNetwork clientNetwork;
+	public static ServerNetwork serverNetwork;
 	
 	public static InputHandler inputHandler = new InputHandler();
 	
@@ -33,9 +46,15 @@ public class App extends JPanel implements Runnable{
 	
 	public static boolean startUpFinished = false;
 	
+	public static boolean connectedToServer = false;
+	
 	public static String currentTextBox = "";
 	
 	public static ArrayList<Message> messagesSent = new ArrayList<> ();
+	
+	public static String uniqueIdentifier;
+	
+	public static String justTyped = "";
 	
 	public App() {
 		
@@ -49,7 +68,39 @@ public class App extends JPanel implements Runnable{
 	
 	public void start() {
 		
+		uniqueIdentifier = randomUUID();
+		
 		System.out.println("App has started");
+
+		try {
+			DatagramSocket socket = new DatagramSocket();
+			socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+			clientIp = socket.getLocalAddress().getHostAddress();
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println(clientIp);
+		
+		clientNetwork = new ClientNetwork(clientIp);
+		clientNetwork.start();
+		
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.println("Run server locally? y/n");
+		String answer = scanner.nextLine();
+		
+		if (answer.trim().toLowerCase().equals("y")) {
+			
+			System.out.println("Server Started");
+			serverNetwork = new ServerNetwork();
+			serverNetwork.start();
+			
+		}
 		
 		username = JOptionPane.showInputDialog(this, "Please enter a username");
 		
@@ -82,7 +133,7 @@ public class App extends JPanel implements Runnable{
 		
 		if (startUpFinished) {
 			
-			// DRAWING CURRENT USER
+			// DRAWING CLIENT USER
 			g.drawImage(defaultIcon, 504, 504, 96, 96, null);
 
 			if (username == null) {
@@ -112,6 +163,10 @@ public class App extends JPanel implements Runnable{
 			g.setFont(new Font("Verdana", Font.PLAIN, 18));
 	        g.drawString("You are currently chatting with: nobody", 100, 50);
 	        
+	        g.setColor(Color.GRAY);
+			g.setFont(new Font("Verdana", Font.PLAIN, 18));
+	        g.drawString("Connection Code: " + Long.toString(ConnectionCode.encodeIpAddress(clientIp)), 100, 30);
+	        
 	        // DRAWING TEXT BOX
 	        
 	        g.drawRect(96, 525, 344, 45);
@@ -131,7 +186,12 @@ public class App extends JPanel implements Runnable{
 	        	}
 	        	else {
 	        		
+	        		justTyped = currentTextBox;
+	        		
 	        		messagesSent.add(new Message(currentTextBox, true));
+	        		
+	        		clientNetwork.sendMessage(currentTextBox + "-" + uniqueIdentifier);
+	        		
 		        	currentTextBox = "";
 		        	inputHandler.enterPressed = false;
 	        	}
@@ -365,7 +425,11 @@ public class App extends JPanel implements Runnable{
 	}
 
 	private void tick() {
-
+		
+		if (!connectedToServer) {
+			clientNetwork.sendMessage("829473583763" + "-" + uniqueIdentifier);
+			connectedToServer = true;
+		}
 		
 		
 	}
