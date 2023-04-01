@@ -225,12 +225,56 @@ public class App extends JPanel implements Runnable{
 	    // Calculate the starting Y position
 	    int startY = endY - (lines.size() - 1) * metrics.getHeight();
 
+	    String type = "";
+	    
+	    if (lines.size() == 1) {
+	    	type = "single";
+	    }
+	    else {
+	    	type = "other";
+	    }
+	    
+	    int maxPixelLength = 0;
+	    
+	    for (int i = 0; i < lines.size(); i++) {
+	    	
+	    	String line = lines.get(i);
+	    	
+	    	maxPixelLength = Math.max(maxPixelLength, getStringLength(lines.get(i), font));
+	    	
+	    }
+	    
+	    System.out.println(maxPixelLength);
+	    
 	    // Draw the lines
 	    for (int i = 0; i < lines.size(); i++) {
 	        String line = lines.get(i);
-	        int pixelLength = metrics.stringWidth(line);
-	        int xPos = startX + 300 - pixelLength;
+	        
+	        //System.out.println(line.replaceAll(" ", "^"));
+	        
+	        int xPos = 0;
+	        
+	        if (i == 0 && (lines.size()-1 == i)) {
+	        	xPos = startX + 300 - maxPixelLength;
+	        	
+	        }
+	        else if (lines.size()-1 == i) {
+	        	xPos = startX + 300 - maxPixelLength;
+	        	
+	        }
+	        else {
+	        	xPos = startX + 300 - maxPixelLength;
+	        }
+	        
 	        g.drawString(line, xPos, startY + i * metrics.getHeight());
+	        
+	    }
+	    
+	    if (type.equals("single")) {
+	    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5, 20);
+	    }
+	    else if (type.equals("other")) {
+	    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5, lines.size() * metrics.getHeight());
 	    }
 	    
 	    int numberOfLines = lines.size();
