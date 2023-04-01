@@ -225,12 +225,122 @@ public class App extends JPanel implements Runnable{
 		
 		for (int i = messagesSent.size()-1; i >= 0; i--) {
 			
-			int adjustmentFactor = drawIndividualMessage(messagesSent.get(i).getMessage(), posX, posY, font, g);
-			
-			posY -= (adjustmentFactor-1)*20+30;
+			if (messagesSent.get(i).isClientUser()) {
+				posX = 250;
+				int adjustmentFactor = drawIndividualMessage(messagesSent.get(i).getMessage(), posX, posY, font, g);
+				
+				posY -= (adjustmentFactor-1)*20+30;
+			}
+			else {
+				posX = 40;
+				int adjustmentFactor = drawIndividualMessageOther(messagesSent.get(i).getMessage(), posX, posY, font, g);
+				
+				posY -= (adjustmentFactor-1)*20+30;
+			}
 			
 		}
 		
+	}
+
+	private int drawIndividualMessageOther(String message, int startX, int endY, Font font, Graphics g) {
+		// Set the font and size of the text
+	    g.setFont(font);
+
+	    // Define the text to display
+	    String text = message;
+
+	    // Get the font metrics object to measure the width of the text
+	    FontMetrics metrics = g.getFontMetrics();
+	    
+	    // Initialize the line width and height
+	    int lineWidth = 0;
+	    int lineHeight = metrics.getHeight();
+	    
+	    // Split the text into lines
+	    List<String> lines = new ArrayList<>();
+	    
+	    StringBuilder currentLine = new StringBuilder();
+	    for (String word : text.split("\\s+")) {
+	        int wordWidth = metrics.stringWidth(word);
+	        if (wordWidth > 300) {
+	            // Split the word into smaller chunks
+	            int startIndex = 0;
+	            while (startIndex < word.length()) {
+	                int endIndex = startIndex;
+	                int chunkWidth = 0;
+	                while (endIndex < word.length() && chunkWidth + metrics.charWidth(word.charAt(endIndex)) <= 300) {
+	                    chunkWidth += metrics.charWidth(word.charAt(endIndex));
+	                    endIndex++;
+	                }
+	                lines.add(word.substring(startIndex, endIndex));
+	                startIndex = endIndex;
+	            }
+	        } else if (lineWidth + wordWidth > 300) {
+	            lines.add(currentLine.toString());
+	            currentLine = new StringBuilder(word + " ");
+	            lineHeight += metrics.getHeight();
+	            lineWidth = wordWidth + metrics.stringWidth(" ");
+	        } else {
+	            currentLine.append(word).append(" ");
+	            lineWidth += wordWidth + metrics.stringWidth(" ");
+	        }
+	    }
+	    if (currentLine.length() > 0) {
+	        lines.add(currentLine.toString());
+	    }
+
+	    // Calculate the starting Y position
+	    int startY = endY - (lines.size() - 1) * metrics.getHeight();
+
+	    String type = "";
+	    
+	    if (lines.size() == 1) {
+	    	type = "single";
+	    }
+	    else {
+	    	type = "other";
+	    }
+	    
+	    int maxPixelLength = 0;
+	    
+	    for (int i = 0; i < lines.size(); i++) {
+	    	
+	    	String line = lines.get(i);
+	    	
+	    	maxPixelLength = Math.max(maxPixelLength, getStringLength(lines.get(i).trim(), font));
+	    	
+	    }
+	    
+	    // Draw the lines
+	    for (int i = 0; i < lines.size(); i++) {
+	        String line = lines.get(i);
+	        
+	        int xPos = 0;
+	        
+	        if (i == 0 && (lines.size()-1 == i)) {
+	        	xPos = startX;
+	        }
+	        else if (lines.size()-1 == i) {
+	        	xPos = startX;
+	        }
+	        else {
+	        	xPos = startX;
+	        }
+	        
+	        g.drawString(line, xPos +10, startY + i * metrics.getHeight());
+	        
+	    }
+	    
+	    if (type.equals("single")) {
+	    	g.drawRect(startX +5, startY-15, maxPixelLength+5+5, 20);
+	    }
+	    else if (type.equals("other")) {
+	    	g.drawRect(startX +5, startY-15, maxPixelLength+5+5, lines.size() * metrics.getHeight());
+	    }
+	    
+	    int numberOfLines = lines.size();
+	    
+	    return numberOfLines;
 	}
 
 	private int drawIndividualMessage(String message, int startX, int endY, Font font, Graphics g) {
