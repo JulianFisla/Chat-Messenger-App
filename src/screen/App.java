@@ -136,7 +136,7 @@ public class App extends JPanel implements Runnable{
 			}
 			if (username.trim().length() == 0) {
 				
-				username = randomUUID();
+				username = "You";
 				
 			}
 			else if (username.length() >= 14) {
@@ -172,7 +172,7 @@ public class App extends JPanel implements Runnable{
 	        	g.drawString("Character limit reached", 96, 590);
 	        }
 	        
-	        if (!inputHandler.typing) {
+	        if (!inputHandler.typing && currentTextBox.equals("")) {
 	        	
 	        	g.setColor(Color.GRAY);
 		        Font font = new Font("Verdana", Font.PLAIN, 15);
@@ -233,7 +233,7 @@ public class App extends JPanel implements Runnable{
 		Font font = new Font("Verdana", Font.PLAIN, 15);
 		
 		int posX = 250;
-		int posY = 400;
+		int posY = 425;
 		
 		
 		for (int i = messagesSent.size()-1; i >= 0; i--) {
@@ -256,6 +256,7 @@ public class App extends JPanel implements Runnable{
 	}
 
 	private int drawIndividualMessageOther(String message, int startX, int endY, Font font, Graphics g) {
+		
 		// Set the font and size of the text
 	    g.setFont(font);
 
@@ -339,16 +340,17 @@ public class App extends JPanel implements Runnable{
 	        else {
 	        	xPos = startX;
 	        }
-	        
-	        g.drawString(line, xPos +10, startY + i * metrics.getHeight());
-	        
+	        if (startY - 15 > 75) {
+	        	g.drawString(line, xPos +10, startY + i * metrics.getHeight());
+	        }
 	    }
-	    
-	    if (type.equals("single")) {
-	    	g.drawRect(startX +5, startY-15, maxPixelLength+5+5, 20);
-	    }
-	    else if (type.equals("other")) {
-	    	g.drawRect(startX +5, startY-15, maxPixelLength+5+5, lines.size() * metrics.getHeight());
+	    if (startY - 15 > 75) {
+		    if (type.equals("single")) {
+		    	g.drawRect(startX +5, startY-15, maxPixelLength+5+5, 20);
+		    }
+		    else if (type.equals("other")) {
+		    	g.drawRect(startX +5, startY-15, maxPixelLength+5+5, lines.size() * metrics.getHeight());
+		    }
 	    }
 	    
 	    int numberOfLines = lines.size();
@@ -443,17 +445,19 @@ public class App extends JPanel implements Runnable{
 	        	xPos = startX + 300 - maxPixelLength;
 	        }
 	        
-	        g.drawString(line, xPos, startY + i * metrics.getHeight());
-	        
+	        if (startY - 15 > 75) {
+	        	g.drawString(line, xPos, startY + i * metrics.getHeight());
+	        }
 	    }
 	    
-	    if (type.equals("single")) {
-	    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5+5, 20);
+	    if (startY - 15 > 75) {
+		    if (type.equals("single")) {
+		    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5+5, 20);
+		    }
+		    else if (type.equals("other")) {
+		    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5+5, lines.size() * metrics.getHeight());
+		    }
 	    }
-	    else if (type.equals("other")) {
-	    	g.drawRect(startX + 300 - maxPixelLength-5, startY-15, maxPixelLength+5+5, lines.size() * metrics.getHeight());
-	    }
-	    
 	    int numberOfLines = lines.size();
 	    
 	    return numberOfLines;

@@ -176,6 +176,11 @@ public class InputHandler implements KeyListener, MouseListener {
 			typing = true;
 			
 		}
+		else if ((x >= 450 && x <= 498) && (y >= 523 && y <= 569)) {
+			
+			enterPressed = true;
+			
+		}
 		else {
 			
 			typing = false;
