@@ -36,6 +36,7 @@ public class ClientNetwork extends Thread {
             DatagramPacket packet = new DatagramPacket(data, data.length);
             try {
                 socket.receive(packet);
+                App.connectedToServer = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }

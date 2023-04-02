@@ -531,7 +531,6 @@ public class App extends JPanel implements Runnable{
 		
 		if (!connectedToServer) {
 			clientNetwork.sendMessage("829473583763" + "-" + uniqueIdentifier);
-			connectedToServer = true;
 		}
 		
 		
