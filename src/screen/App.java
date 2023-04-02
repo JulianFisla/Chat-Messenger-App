@@ -40,6 +40,7 @@ public class App extends JPanel implements Runnable{
 	public static InputHandler inputHandler = new InputHandler();
 	
 	public static String username;
+	public static String secondUsername = "";
 	
 	public static BufferedImage defaultIcon;
 	public static BufferedImage submitButton;
@@ -57,6 +58,8 @@ public class App extends JPanel implements Runnable{
 	public static String justTyped = "";
 	
 	public static boolean characterLimitReached = false;
+	
+	public static int loginTick = 0;
 	
 	public App() {
 		
@@ -99,6 +102,10 @@ public class App extends JPanel implements Runnable{
 		
 		username = JOptionPane.showInputDialog(this, "Please enter a username");
 		
+		while (username == null || username.trim().equals("")) {
+			username = JOptionPane.showInputDialog(this, "Please enter a username");
+		}
+		
 		System.out.println("username entered");
 		
 		loadImages();
@@ -128,15 +135,14 @@ public class App extends JPanel implements Runnable{
 		
 		if (startUpFinished) {
 			
+			if (loginTick == 1000) {
+				loginTick = 0;
+			}
+			
 			// DRAWING CLIENT USER
 			g.drawImage(defaultIcon, 504, 504, 96, 96, null);
-
-			if (username == null) {
-				username = "";
-			}
+			
 			if (username.trim().length() == 0) {
-				
-				username = "You";
 				
 			}
 			else if (username.length() >= 14) {
@@ -150,13 +156,25 @@ public class App extends JPanel implements Runnable{
 	        // DRAWING SECOND USER
 			g.drawImage(defaultIcon, 0, 504, 96, 96, null);
 			
+			String temp = secondUsername;
+	        
+	        if (secondUsername.equals("")) {
+	        	temp = "not connected";
+	        }
+			
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("Verdana", Font.PLAIN, 12));
-	        g.drawString("Username: not connected", 16, 504);
+	        g.drawString("Username: " + temp, 16, 504);
+	        
+	        temp = secondUsername;
+	        
+	        if (secondUsername.equals("")) {
+	        	temp = "nobody";
+	        }
 	        
 	        g.setColor(Color.GRAY);
 			g.setFont(new Font("Verdana", Font.PLAIN, 18));
-	        g.drawString("You are currently chatting with: nobody", 100, 50);
+	        g.drawString("You are currently chatting with: " + temp, 100, 50);
 	        
 	        g.setColor(Color.GRAY);
 			g.setFont(new Font("Verdana", Font.PLAIN, 18));
@@ -203,7 +221,7 @@ public class App extends JPanel implements Runnable{
 	        		
 	        		messagesSent.add(new Message(currentTextBox, true));
 	        		
-	        		clientNetwork.sendMessage(currentTextBox + "-" + uniqueIdentifier);
+	        		clientNetwork.sendMessage(currentTextBox + "-" + uniqueIdentifier + "_" + username);
 	        		
 		        	currentTextBox = "";
 		        	inputHandler.enterPressed = false;
@@ -535,7 +553,7 @@ public class App extends JPanel implements Runnable{
 	public void run() {
 		
 		long lastTime = System.nanoTime();
-	    final double ns = 1000000000.0 / 60.0;
+	    final double ns = 1000000000.0 / 45.0;
 	    double delta = 0;
 	    while(true){
 	        long now = System.nanoTime();
@@ -553,10 +571,14 @@ public class App extends JPanel implements Runnable{
 
 	private void tick() {
 		
-		if (!connectedToServer) {
-			clientNetwork.sendMessage("829473583763" + "-" + uniqueIdentifier);
+		if (loginTick % 10 == 0) {
+			if (!connectedToServer) {
+				
+				clientNetwork.sendMessage("829473583763" + "-" + uniqueIdentifier + "_" + username);
+			}
 		}
 		
+		loginTick++;
 		
 	}
 	

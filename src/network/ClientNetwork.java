@@ -50,10 +50,12 @@ public class ClientNetwork extends Thread {
 		
 		if (!message.trim().substring(0, message.trim().indexOf("-")).equals("829473583763")) {
 			
-			System.out.println("MESSAGE ADDED: " + message.trim().substring(0, message.trim().indexOf("-")));
+			//System.out.println("MESSAGE ADDED: " + message.trim().substring(0, message.trim().indexOf("-")));
 			App.messagesSent.add(new Message(message.trim().substring(0, message.trim().indexOf("-")), false));
 			
 		}
+		
+		App.secondUsername = message.trim().substring(message.trim().indexOf("_")+1);
 		
 	}
 

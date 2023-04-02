@@ -13,20 +13,25 @@ public class ServerNetwork extends Thread{
 	private DatagramSocket socket;
 	private List<ConnectedUser> users = new ArrayList<ConnectedUser>();
 	
+	private ArrayList<String> loginPackets = new ArrayList<String> ();
+	
+	private boolean alreadyLocalServer = false;
 	
 	public ServerNetwork() {
 		
 		try {
 			socket = new DatagramSocket(1331);
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			System.out.println("A server is already running locally!");
+			//alreadyLocalServer = true;
+			
 		}
 		
 	}
 	
 	public void run() {
-        while (true) {
+        while (!alreadyLocalServer) {
             byte[] data = new byte[1024];
             DatagramPacket packet = new DatagramPacket(data, data.length);
             try {
@@ -42,13 +47,14 @@ public class ServerNetwork extends Thread{
 		
 		String message = new String(data);
 		
-		String uniqueIdentifier = message.trim().substring(message.trim().indexOf("-")+1);
+		String uniqueIdentifier = message.trim().substring(message.trim().indexOf("-")+1, message.trim().indexOf("_"));
 		
 		boolean alreadyUser = false;
 		
 		if (users.size() == 0) {
 			
 			users.add(new ConnectedUser(address, port, uniqueIdentifier));
+			loginPackets.add(new String(data));
 			
 		}
 		else {
@@ -66,6 +72,7 @@ public class ServerNetwork extends Thread{
 			if (!alreadyUser) {
 				
 				users.add(new ConnectedUser(address, port, uniqueIdentifier));
+				sendDataToClient(loginPackets.get(0).getBytes(), users.get(0).getIp(), users.get(0).getPort());
 				
 			}
 			
@@ -79,7 +86,7 @@ public class ServerNetwork extends Thread{
 		
 		String message = new String(data);
 		
-		String uniqueIdentifier = message.trim().substring(message.trim().indexOf("-")+1);
+		String uniqueIdentifier = message.trim().substring(message.trim().indexOf("-")+1, message.trim().indexOf("_"));
 		
         for (int i = 0; i < users.size(); i++) {
         	
