@@ -56,6 +56,8 @@ public class App extends JPanel implements Runnable{
 	
 	public static String justTyped = "";
 	
+	public static boolean characterLimitReached = false;
+	
 	public App() {
 		
 		this.setPreferredSize(new Dimension(600, 600));
@@ -164,6 +166,22 @@ public class App extends JPanel implements Runnable{
 	        
 	        g.drawRect(96, 525, 344, 45);
 	        
+	        if (characterLimitReached) {
+	        	g.setColor(Color.BLACK);
+				g.setFont(new Font("Verdana", Font.PLAIN, 13));
+	        	g.drawString("Character limit reached", 96, 590);
+	        }
+	        
+	        if (!inputHandler.typing) {
+	        	
+	        	g.setColor(Color.GRAY);
+		        Font font = new Font("Verdana", Font.PLAIN, 15);
+		        
+		        g.setFont(font);
+		        g.drawString("Click here", 105, 550);
+	        	
+	        }
+	        
 	        // DRAWING SUBMIT BUTTON
 	        
 	        g.drawImage(submitButton, 450, 523, 48, 46, null);
@@ -172,6 +190,8 @@ public class App extends JPanel implements Runnable{
 	        
 	        if (inputHandler.enterPressed) {
 	        
+	        	characterLimitReached = false;
+	        	
 	        	if (currentTextBox.equals("")) {
 	        		
 	        		currentTextBox = "";

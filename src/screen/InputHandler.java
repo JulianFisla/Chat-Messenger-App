@@ -17,7 +17,7 @@ public class InputHandler implements KeyListener, MouseListener {
     private boolean bufferActive;
     private boolean shiftPressed; // flag to keep track of Shift key press
     public boolean enterPressed; // flag to keep track of Enter key press
-    private boolean typing = false;
+    public boolean typing = false;
     private Queue<Character> inputQueue;
     private Thread inputThread;
 
@@ -55,22 +55,29 @@ public class InputHandler implements KeyListener, MouseListener {
 	        }
 	        else {
 	        	
-	            if (Character.isLetter(input) && shiftPressed) {
-	            	
-	                // add uppercase version of letter to the queue if Shift key is pressed
-	                inputQueue.add(Character.toUpperCase(input));
-	                
-	                
-	            }
-	            else {
-	                // add regular key input to the queue and start buffer timer if not active
-	                inputQueue.add(input);
-	                if (!bufferActive) {
-	                    bufferActive = true;
-	                    bufferTimer = new Timer();
-	                    bufferTimer.schedule(new KeyBufferTask(), BUFFER_TIME_MS);
-	                }
-	            }
+	        	if (!(keyCode == KeyEvent.VK_BACK_SPACE) && App.currentTextBox.length() == 150) {
+	        		App.characterLimitReached = true;;
+	        	}
+	        	else {
+	        		App.characterLimitReached = false;
+	        		if (Character.isLetter(input) && shiftPressed) {
+		            	
+		                // add uppercase version of letter to the queue if Shift key is pressed
+		                inputQueue.add(Character.toUpperCase(input));
+		                
+		                
+		            }
+		            else {
+		                // add regular key input to the queue and start buffer timer if not active
+		                inputQueue.add(input);
+		                if (!bufferActive) {
+		                    bufferActive = true;
+		                    bufferTimer = new Timer();
+		                    bufferTimer.schedule(new KeyBufferTask(), BUFFER_TIME_MS);
+		                }
+		            }
+	        	}
+	            
 	        }
         }
         // consume the event to prevent default handling
