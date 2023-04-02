@@ -89,18 +89,11 @@ public class App extends JPanel implements Runnable{
 		clientNetwork = new ClientNetwork(clientIp);
 		clientNetwork.start();
 		
-		Scanner scanner = new Scanner(System.in);
-		
-		System.out.println("Run server locally? y/n");
-		String answer = scanner.nextLine();
-		
-		if (answer.trim().toLowerCase().equals("y")) {
-			
+		if (JOptionPane.showConfirmDialog(this, "Do you want to run the server") == 0) {
 			System.out.println("Server Started");
 			serverNetwork = new ServerNetwork();
 			serverNetwork.start();
-			
-		}
+        }
 		
 		username = JOptionPane.showInputDialog(this, "Please enter a username");
 		
