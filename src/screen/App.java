@@ -61,6 +61,8 @@ public class App extends JPanel implements Runnable{
 	
 	public static int loginTick = 0;
 	
+	public static int cursorTick = 0;
+	
 	public App() {
 		
 		this.setPreferredSize(new Dimension(600, 600));
@@ -239,6 +241,21 @@ public class App extends JPanel implements Runnable{
 			g.setFont(font);
 	        g.drawString(getLast325Pixels(currentTextBox), 105, 550);
 	        
+	        // DRAW CURSOR WHILE TYPING
+	        
+	        
+	        if (inputHandler.typing) {
+		        if (cursorTick % 40 < 20) {
+		        	
+		        	g.drawRect(getStringLength(currentTextBox, font)+105, 535, 0, 20);
+		        	
+		        }
+		        if (cursorTick >= 1000) {
+		        	cursorTick = 0;
+		        }
+		        
+		        cursorTick++;
+	        }
 	        // DRAWING MESSAGES TO SCREEN
 	        
 	        drawTextOnScreen(messagesSent, g);
