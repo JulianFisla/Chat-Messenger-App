@@ -270,6 +270,7 @@ public class App extends JPanel implements Runnable{
 		int posX = 250;
 		int posY = 425;
 		
+		// GO THROUGH EACH MESSAGE AND DRAW ACCORDINGLY
 		
 		for (int i = messagesSent.size()-1; i >= 0; i--) {
 			
@@ -568,6 +569,8 @@ public class App extends JPanel implements Runnable{
 	
 	@Override
 	public void run() {
+		
+		// MAIN RUN METHOD WILL BE CALL TICK AND REPAINT 45 TIMES PER SECOND
 		
 		long lastTime = System.nanoTime();
 	    final double ns = 1000000000.0 / 45.0;
