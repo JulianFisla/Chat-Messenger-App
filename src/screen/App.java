@@ -133,6 +133,8 @@ public class App extends JPanel implements Runnable{
 
 	public void paintComponent(Graphics g) {
 		
+		// REFRESH SCREEN
+		
 		super.paintComponent(g);
 		
 		if (startUpFinished) {
