@@ -17,6 +17,8 @@ public class Main {
 		frame.setResizable(false);
 		frame.setTitle("Chat-Messenger");
 		
+		// INITIALIZE APP
+		
 		app = new App();
 		
 		frame.add(app);
