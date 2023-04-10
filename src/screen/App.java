@@ -65,6 +65,8 @@ public class App extends JPanel implements Runnable{
 	
 	public App() {
 		
+		// WINDOW SETTINGS
+		
 		this.setPreferredSize(new Dimension(600, 600));
 		this.setBackground(Color.white);
 		this.addKeyListener(inputHandler);
