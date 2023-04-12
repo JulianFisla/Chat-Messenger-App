@@ -77,6 +77,8 @@ public class App extends JPanel implements Runnable{
 	
 	public void start() {
 		
+		// START APP
+		
 		uniqueIdentifier = randomUUID();
 		
 		System.out.println("App has started");
