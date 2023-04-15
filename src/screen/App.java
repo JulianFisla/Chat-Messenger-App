@@ -118,6 +118,8 @@ public class App extends JPanel implements Runnable{
 		
 		startUpFinished = true;
 		
+		// START THREAD
+		
 		thread = new Thread(this);
 		thread.start();
 		
