@@ -127,6 +127,8 @@ public class App extends JPanel implements Runnable{
 	
 	private void loadImages() {
 
+		// FETCH IMAGES
+		
 		try {
 			defaultIcon = ImageIO.read(getClass().getResourceAsStream("/icons/defaulticon.png"));
 			submitButton = ImageIO.read(getClass().getResourceAsStream("/icons/entericon.png"));
