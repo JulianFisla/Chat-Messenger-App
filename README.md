@@ -16,8 +16,33 @@ A basic prototype of a chat system demonstrating simple networking capabilities 
 ## How to Use
 
 1. Clone the repository:
+   
    ```bash
    git clone https://github.com/JulianFisla/Chat-Messenger-App.git
    
-2. Run the server and client files in separate terminals.
-3. Start chatting by entering your messages in the console.
+3. Run the server and client files in separate terminals.
+   
+5. Start chatting by entering your messages in the console.
+
+## Installation
+
+1. Ensure you have the Java Development Kit (JDK) installed.
+   
+2. Compile the code using the command:
+
+   ```bash
+   javac *.java
+   
+3. Run the server:
+
+   ```bash
+   java Server
+
+4. Run the Client
+
+   ```bash
+      java Server
+
+## Known Issues:
+
+1. Text display may behave differently on various machines due to system compatibility.
