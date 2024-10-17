@@ -19,6 +19,7 @@ A basic prototype of a chat system demonstrating simple networking capabilities 
    
    ```bash
    git clone https://github.com/JulianFisla/Chat-Messenger-App.git
+   ```
    
 3. Run the server and client files in separate terminals.
    
@@ -32,16 +33,19 @@ A basic prototype of a chat system demonstrating simple networking capabilities 
 
    ```bash
    javac *.java
+   ```
    
 3. Run the server:
 
    ```bash
    java Server
+   ```
 
 4. Run the Client
 
    ```bash
-      java Server
+   java Server
+   ```
 
 ## Known Issues:
 
