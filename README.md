@@ -1,6 +1,6 @@
 # Chat Messenger App
 
-This project is a prototype for a multi-client chat application built in Java, designed to demonstrate the fundamentals of network programming. The application utilizes client-server architecture, enabling real-time communication between connected users. By leveraging Java's `Socket` and I/O libraries, the app facilitates message exchange over TCP/IP, simulating a basic messaging service. It focuses on core networking concepts like socket connections, input/output streams, and user input handling through the console.
+This project is a prototype for a multi-client chat application built in Java, designed to demonstrate the fundamentals of network programming. The application utilizes client-server architecture, enabling real-time communication between connected users. By leveraging Java's `Socket` and I/O libraries, the app facilitates message exchange over TCP/IP, simulating a basic messaging service.
 
 ## Features
 
